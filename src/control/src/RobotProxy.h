@@ -12,18 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#ifndef ROBOTPROXY_H_
+#define ROBOTPROXY_H_
 
 #include <control/common_types.h>
 
-namespace DwaController {
+namespace DwaController
+{
 
-class RobotProxy {
+class RobotProxy
+{
 public:
-  void setCurrentPose(Pose& pose) { currentPose = pose; }
-  Pose getCurrentPose() const {return currentPose; }
+  void setCurrentPose(Pose & pose) {currentPose = pose;}
+  Pose getCurrentPose() const {return currentPose;}
+
 protected:
   Pose currentPose;
 };
 
-}
+}  // namespace DwaController
+
+#endif  // ROBOTPROXY_H_

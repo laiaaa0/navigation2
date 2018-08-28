@@ -16,20 +16,22 @@
 
 #include <control/FollowPathTaskClient.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <memory>
 
 class TestNode : public ::testing::Test
 {
 public:
-  TestNode() {
+  TestNode()
+  {
     rclcpp::init(0, nullptr);
     node = rclcpp::Node::make_shared("dwa_controller_test");
     client = std::make_unique<FollowPathTaskClient>("DwaController", node.get());
-    while(node->count_subscribers("/DwaController_command") < 1)
-    {
+    while (node->count_subscribers("/DwaController_command") < 1) {
       rclcpp::spin_some(node);
     }
   }
-  ~TestNode() {
+  ~TestNode()
+  {
     rclcpp::shutdown();
   }
 
@@ -43,8 +45,7 @@ TEST_F(TestNode, ResultReturned)
   FollowPathCommand c;
   client->executeAsync(std::make_shared<FollowPathCommand>(c));
   FollowPathResult r;
-  while(client->waitForResult(std::make_shared<FollowPathResult>(r), 1) == TaskStatus::RUNNING)
-  {
+  while (client->waitForResult(std::make_shared<FollowPathResult>(r), 1) == TaskStatus::RUNNING) {
     rclcpp::spin_some(node);
   }
   SUCCEED();

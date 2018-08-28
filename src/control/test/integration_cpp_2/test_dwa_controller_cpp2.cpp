@@ -14,21 +14,22 @@
 
 #include <gtest/gtest.h>
 
-#include <cstdlib>
 #include <experimental/filesystem>
 #include <rclcpp/rclcpp.hpp>
 #include <control/FollowPathTaskClient.hpp>
-#include <iostream>
+#include <cstdlib>
+#include <memory>
+#include <string>
 
-using namespace std;
-namespace fs = std::experimental::filesystem;
+using namespace std;  // NOLINT
+using std::experimental::filesystem::path;
 
 class PlannerNodeLauncher
 {
 public:
   PlannerNodeLauncher()
   {
-    auto launchFile = fs::path(getenv("TEST_LAUNCH_DIR")) / fs::path("dwa_controller_node.launch.py");
+    auto launchFile = path(getenv("TEST_LAUNCH_DIR")) / path("dwa_controller_node.launch.py");
     ros_launcher_pid = subprocess("ros2 launch " + launchFile.string());
   }
 
@@ -36,12 +37,12 @@ public:
   {
     kill(-ros_launcher_pid, SIGINT);
   }
+
 protected:
   pid_t subprocess(std::string command)
   {
     auto pid = fork();
-    if(pid == 0) // Child
-    {
+    if (pid == 0) {  // Child process
       setpgid(getpid(), getpid());
       system(command.c_str());
       exit(0);
@@ -51,23 +52,25 @@ protected:
   pid_t ros_launcher_pid;
 };
 
-//By makinging it a global variable, this has executable scope rather than being
-//restarted every test.
+// By makinging it a global variable, this has executable scope rather than being
+// restarted every test.
 PlannerNodeLauncher g_launcher;
 
 class TestNode : public ::testing::Test
 {
 public:
-  TestNode() {
+  TestNode()
+  {
     rclcpp::init(0, nullptr);
     node = rclcpp::Node::make_shared("dwa_controller_test");
     client = std::make_unique<FollowPathTaskClient>("DwaController", node.get());
-    while(node->count_subscribers("/DwaController_command") < 1)
-    {
+    while (node->count_subscribers("/DwaController_command") < 1) {
       rclcpp::spin_some(node);
     }
   }
-  ~TestNode() {
+
+  ~TestNode()
+  {
     rclcpp::shutdown();
   }
 
@@ -81,8 +84,7 @@ TEST_F(TestNode, ResultReturned)
   FollowPathCommand c;
   client->executeAsync(std::make_shared<FollowPathCommand>(c));
   FollowPathResult r;
-  while(client->waitForResult(std::make_shared<FollowPathResult>(r), 1) == TaskStatus::RUNNING)
-  {
+  while (client->waitForResult(std::make_shared<FollowPathResult>(r), 1) == TaskStatus::RUNNING) {
     rclcpp::spin_some(node);
   }
   SUCCEED();

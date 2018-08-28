@@ -12,10 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#ifndef CONTROL__COMMON_TYPES_H_
+#define CONTROL__COMMON_TYPES_H_
+
 #include "geometry_msgs/msg/pose.hpp"
 
-namespace DwaController {
-  typedef geometry_msgs::msg::Pose Pose;
+namespace DwaController
+{
+
+typedef geometry_msgs::msg::Pose Pose;
 
 }
+
+#endif  // CONTROL__COMMON_TYPES_H_

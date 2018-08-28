@@ -1,6 +1,6 @@
-#find_package(GTest REQUIRED)
-
-ament_add_gtest_executable(test_dwa_controller_node test_dwa_controller_node.cpp)
+ament_add_gtest_executable(test_dwa_controller_node
+  test_dwa_controller_node.cpp
+)
 ament_target_dependencies(test_dwa_controller_node
   ${PROJECT_DEPENDENCIES}
 )
