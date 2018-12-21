@@ -47,7 +47,7 @@ namespace dwb_critics
 {
 
 // Customization of the CostmapQueue validCellToQueue method
-bool MapGridCritic::MapGridQueue::validCellToQueue(const costmap_queue::CellData & cell)
+bool MapGridQueue::validCellToQueue(const costmap_queue::CellData & cell)
 {
   unsigned char cost = costmap_.getCost(cell.x_, cell.y_);
   if (cost == nav2_costmap_2d::LETHAL_OBSTACLE ||

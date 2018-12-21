@@ -42,6 +42,23 @@
 
 namespace dwb_critics
 {
+
+class MapGridCritic;
+/**
+ * @class MapGridQueue
+ * @brief Subclass of CostmapQueue that avoids Obstacles and Unknown Values
+ */
+class MapGridQueue : public costmap_queue::CostmapQueue
+{
+public:
+  MapGridQueue(nav2_costmap_2d::Costmap2D & costmap, MapGridCritic & parent)
+  : costmap_queue::CostmapQueue(costmap, true), parent_(parent) {}
+  bool validCellToQueue(const costmap_queue::CellData & cell) override;
+
+protected:
+  MapGridCritic & parent_;
+};
+
 /**
  * @class MapGridCritic
  * @brief breadth-first scoring of all the cells in the costmap
@@ -99,21 +116,6 @@ protected:
    */
   // cppcheck-suppress syntaxError
   enum class ScoreAggregationType {Last, Sum, Product};
-
-  /**
-   * @class MapGridQueue
-   * @brief Subclass of CostmapQueue that avoids Obstacles and Unknown Values
-   */
-  class MapGridQueue : public costmap_queue::CostmapQueue
-  {
-public:
-    MapGridQueue(nav2_costmap_2d::Costmap2D & costmap, MapGridCritic & parent)
-    : costmap_queue::CostmapQueue(costmap, true), parent_(parent) {}
-    bool validCellToQueue(const costmap_queue::CellData & cell) override;
-
-protected:
-    MapGridCritic & parent_;
-  };
 
   /**
    * @brief Clear the queuDWB_CRITICS_MAP_GRID_He and set cell_values_ to the appropriate number of unreachableCellScore
