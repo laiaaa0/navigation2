@@ -124,6 +124,7 @@ protected:
    * @brief Go through the queue and set the cells to the Manhattan distance from their parents
    */
   void propogateManhattanDistances();
+  void publish();
 
   std::shared_ptr<MapGridQueue> queue_;
   nav2_costmap_2d::Costmap2D * costmap_;
@@ -131,6 +132,7 @@ protected:
   double obstacle_score_, unreachable_score_;  ///< Special cell_values
   bool stop_on_failure_;
   ScoreAggregationType aggregationType_;
+  rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr distance_pub_;
 };
 }  // namespace dwb_critics
 

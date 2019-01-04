@@ -59,6 +59,8 @@ bool GoalDistCritic::prepare(
 
   propogateManhattanDistances();
 
+  publish();
+
   return true;
 }
 

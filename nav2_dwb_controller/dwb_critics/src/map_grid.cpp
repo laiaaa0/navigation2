@@ -66,6 +66,8 @@ void MapGridCritic::onInit()
   costmap_ = costmap_ros_->getCostmap();
   queue_ = std::make_shared<MapGridQueue>(*costmap_, *this);
 
+  distance_pub_ = nh_->create_publisher<nav_msgs::msg::OccupancyGrid>(name_ + "_mapgrid");
+
   // Always set to true, but can be overriden by subclasses
   stop_on_failure_ = true;
 
@@ -84,6 +86,43 @@ void MapGridCritic::onInit()
       aggro_str.c_str());
     aggregationType_ = ScoreAggregationType::Last;
   }
+}
+
+void MapGridCritic::publish()
+{
+  double max_distance = 0;
+  for (auto value : cell_values_) {
+    if (value < obstacle_score_)
+      max_distance = std::max(value, max_distance);
+  }
+
+  nav_msgs::msg::OccupancyGrid grid_;
+  grid_.header.frame_id = "map";
+  grid_.header.stamp = nh_->now();
+
+  grid_.info.resolution = costmap_->getResolution();
+
+  grid_.info.width = costmap_->getSizeInCellsX();
+  grid_.info.height = costmap_->getSizeInCellsY();
+
+  double wx, wy;
+  costmap_->mapToWorld(0, 0, wx, wy);
+  grid_.info.origin.position.x = wx - costmap_->getResolution() / 2;
+  grid_.info.origin.position.y = wy - costmap_->getResolution() / 2;
+  grid_.info.origin.position.z = 0.0;
+  grid_.info.origin.orientation.w = 1.0;
+
+  grid_.data.resize(grid_.info.width * grid_.info.height);
+  assert(grid_.data.size() == cell_values_.size());
+
+  for (unsigned i = 0; i < cell_values_.size(); i++) {
+    if (cell_values_[i] < obstacle_score_)
+      grid_.data[i] = int(cell_values_[i]/max_distance * 100);
+    else
+      grid_.data[i] = -1;
+  }
+
+  distance_pub_->publish(grid_);
 }
 
 void MapGridCritic::setAsObstacle(unsigned int index)
