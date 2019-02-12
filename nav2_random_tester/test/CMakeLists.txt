@@ -1,0 +1,1 @@
+ament_add_gtest(test_dot_map_generator test_dot_map_generator.cpp)
