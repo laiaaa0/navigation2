@@ -29,7 +29,7 @@ public:
   RclCppFixture()
   {
     rclcpp::init(0, nullptr);
-    nav2_util::BringupLifecycleNodes(std::getenv("LIFECYCLE_NODE_DEPENDENCIES"));
+    nav2_util::BringupLifecycleNodes("/test_node:/test_namespace/test_node");
   }
   ~RclCppFixture() {rclcpp::shutdown();}
 };
