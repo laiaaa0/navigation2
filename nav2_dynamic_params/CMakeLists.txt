@@ -4,6 +4,7 @@ project(nav2_dynamic_params)
 find_package(ament_cmake REQUIRED)
 find_package(nav2_common REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 
 nav2_package()
 
@@ -13,6 +14,7 @@ include_directories(
 
 set(dependencies
   rclcpp
+  rclcpp_lifecycle
 )
 
 add_library(nav2_dynamic_params SHARED
