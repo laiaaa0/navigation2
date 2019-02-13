@@ -16,15 +16,21 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 #include "gtest/gtest.h"
 #include "nav2_dynamic_params/dynamic_params_client.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "nav2_util/lifecycle.hpp"
 
 class RclCppFixture
 {
 public:
-  RclCppFixture() {rclcpp::init(0, nullptr);}
+  RclCppFixture()
+  {
+    rclcpp::init(0, nullptr);
+    nav2_util::BringupLifecycleNodes(std::getenv("LIFECYCLE_NODE_DEPENDENCIES"));
+  }
   ~RclCppFixture() {rclcpp::shutdown();}
 };
 

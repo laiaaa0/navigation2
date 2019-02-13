@@ -40,6 +40,7 @@ def main(argv=sys.argv[1:]):
     test1_action = ExecuteProcess(
         cmd=[testExecutable],
         name='test_dynamic_params_client',
+        env={'LIFECYCLE_NODE_DEPENDENCIES': '/test_node:/test_namespace/test_node'}
     )
 
     ld.add_action(test1_action)
