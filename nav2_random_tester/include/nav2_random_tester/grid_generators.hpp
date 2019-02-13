@@ -19,26 +19,35 @@
 
 namespace nav2_random_tester
 {
+#define NOT_COPYABLE(CLASSNAME) \
+ CLASSNAME(const CLASSNAME &) = delete; \
+ CLASSNAME & operator=(const CLASSNAME &) = delete
 
 class Grid
 {
 public:
+  NOT_COPYABLE(Grid);
   typedef std::tuple<size_t, size_t> GridSize;
 
+  // Create with sizes for x and y dimensions or with a GridSize tuple
   Grid(size_t size_x, size_t size_y)
-    : x(size_x), y(size_y) {allocate_memory();}
+    : x_size(size_x), y_size(size_y) {allocate_memory();}
   Grid(GridSize size)
-    : x(std::get<0>(size)), y(std::get<1>(size)) {allocate_memory();}
+    : x_size(std::get<0>(size)), y_size(std::get<1>(size)) {allocate_memory();}
   virtual ~Grid() {delete grid_data;}
 
-  size_t size_x() {return x;}
-  size_t size_y() {return y;}
-  GridSize size() {return GridSize(x, y);}
+  // get sizes individually or as tuple
+  size_t size_x() {return x_size;}
+  size_t size_y() {return y_size;}
+  GridSize size() {return GridSize(x_size, y_size);}
+
+  // used for setting or getting.
+  double & cell(size_t x, size_t y) { return grid_data[x + x_size * y]; }
 
 protected:
-  void allocate_memory() {grid_data = new double[x*y];}
-  size_t x;
-  size_t y;
+  void allocate_memory() {grid_data = new double[x_size * y_size];}
+  size_t x_size;
+  size_t y_size;
   double * grid_data;
 };
 

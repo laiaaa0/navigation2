@@ -32,18 +32,39 @@ namespace nav2_random_tester
 
 using namespace nav2_random_tester;
 
-TEST(grid, construction) {
+// These should not compile. Uncomment and test individually if mucking with
+// constructors or assignment operators
+// TEST(grid, copynotallowed) {
+//   Grid a(2, 3);
+//   Grid b(a);
+// }
+//
+// TEST(grid, assignmentnotallowed) {
+//   Grid a(2, 3);
+//   Grid b(5, 6);
+//   a = b;
+// }
+
+TEST(grid, construction)
+{
   size_t size_x = 10;
   size_t size_y = 20;
   Grid grid(size_x, size_y);
   ASSERT_EQ(grid.size(), std::make_tuple(size_x, size_y));
 }
 
-TEST(grid, GridSize_construction) {
+TEST(grid, GridSize_construction)
+{
   size_t size_x = 10;
   size_t size_y = 20;
   Grid grid(Grid::GridSize(size_x, size_y));
   ASSERT_EQ(grid.size_x(), size_x);
   ASSERT_EQ(grid.size_y(), size_y);
-  // ASSERT_NE(grid.grid_data, nullptr);
+}
+
+TEST(grid, assignment)
+{
+  Grid g(2, 3);
+  g.cell(1,1) = 5.0;
+  ASSERT_EQ(g.cell(1,1), 5.0);
 }
