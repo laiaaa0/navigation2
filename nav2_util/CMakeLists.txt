@@ -16,11 +16,12 @@ nav2_package()
 
 include_directories(include)
 
-add_library(costmap_lib SHARED
+add_library(nav2_util SHARED
   src/costmap.cpp
+  src/lifecycle.cpp
 )
 
-ament_target_dependencies(costmap_lib
+ament_target_dependencies(nav2_util
   rclcpp
   nav2_msgs
   tf2
@@ -77,7 +78,7 @@ target_link_libraries(map_loader
 )
 
 install(TARGETS
-  costmap_lib
+  nav2_util
   map_lib
   pf_lib
   sensors_lib
@@ -102,6 +103,6 @@ if(BUILD_TESTING)
 endif()
 
 ament_export_include_directories(include)
-ament_export_libraries(costmap_lib pf_lib sensors_lib motions_lib map_lib map_loader)
+ament_export_libraries(nav2_util pf_lib sensors_lib motions_lib map_lib map_loader)
 
 ament_package()

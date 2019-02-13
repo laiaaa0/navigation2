@@ -12,24 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_UTIL__LIFECYCLE_HPP_
-#define NAV2_UTIL__LIFECYCLE_HPP_
+#include "nav2_util/lifecycle.hpp"
+#include <cstring>
+#include "gtest/gtest.h"
 
-#include <vector>
-#include <string>
+using nav2_util::Split;
+using nav2_util::Tokens;
 
-namespace nav2_util
+TEST(Split, SplitFunction)
 {
-
-typedef std::vector<std::string> Tokens;
-std::vector<std::string> Split(const std::string tokenstring, char delimiter);
-
-void BringupLifecycleNodes(const std::vector<std::string> & node_names);
-void BringupLifecycleNodes(const std::string & nodes)
-{
-  BringupLifecycleNodes(Split(nodes, ':'));
+  ASSERT_EQ(Split("", ':'), Tokens({""}));
+  ASSERT_EQ(Split("foo", ':'), Tokens{"foo"});
+  ASSERT_EQ(Split("foo:bar", ':'), Tokens({"foo", "bar"}));
+  ASSERT_EQ(Split("foo:bar:", ':'), Tokens({"foo", "bar", ""}));
+  ASSERT_EQ(Split(":", ':'), Tokens({"", ""}));
+  ASSERT_EQ(Split("foo::bar", ':'), Tokens({"foo", "", "bar"}));
 }
-
-}  // namespace nav2_util
-
-#endif  // NAV2_UTIL__LIFECYCLE_HPP_

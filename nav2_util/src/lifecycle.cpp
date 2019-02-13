@@ -12,24 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_UTIL__LIFECYCLE_HPP_
-#define NAV2_UTIL__LIFECYCLE_HPP_
-
+#include "nav2_util/lifecycle.hpp"
 #include <vector>
 #include <string>
 
 namespace nav2_util
 {
 
-typedef std::vector<std::string> Tokens;
-std::vector<std::string> Split(const std::string tokenstring, char delimiter);
-
-void BringupLifecycleNodes(const std::vector<std::string> & node_names);
-void BringupLifecycleNodes(const std::string & nodes)
+Tokens Split(const std::string tokenstring, char delimiter)
 {
-  BringupLifecycleNodes(Split(nodes, ':'));
+  Tokens tokens;
+
+  size_t current_pos = 0;
+  size_t pos = 0;
+  while ((pos = tokenstring.find(delimiter, current_pos)) != std::string::npos) {
+    tokens.push_back(tokenstring.substr(current_pos, pos - current_pos));
+    current_pos = pos + 1;
+  }
+  tokens.push_back(tokenstring.substr(current_pos));
+  return tokens;
+}
+
+void BringupLifecycleNodes(const std::vector<std::string> &)
+{
+
 }
 
 }  // namespace nav2_util
-
-#endif  // NAV2_UTIL__LIFECYCLE_HPP_
