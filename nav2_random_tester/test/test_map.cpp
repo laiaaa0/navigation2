@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Intel Corporation
+// Copyright (c) 2019 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,22 @@
 
 #include "gtest/gtest.h"
 
-TEST(basictest, success) {
-  SUCCEED();
+#include "nav2_random_tester/grid_generators.hpp"
+
+using namespace nav2_random_tester;
+
+class Map
+{
+public:
+  Map(double x, double y, double resolution) :
+    x(x), y(y), resolution(resolution) {}
+private:
+  double x;
+  double y;
+  double resolution;
+  // Grid map_grid;
+};
+
+TEST(creation, creation) {
+  Map m(10,10,0.1);
 }

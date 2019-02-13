@@ -1,1 +1,2 @@
-ament_add_gtest(test_dot_map_generator test_dot_map_generator.cpp)
+ament_add_gtest(test_grid_generators test_grid_generators.cpp)
+ament_add_gtest(test_map test_map.cpp)
