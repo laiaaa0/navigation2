@@ -21,6 +21,7 @@ include_directories(include)
 add_library(nav2_util SHARED
   src/costmap.cpp
   src/lifecycle.cpp
+  src/node_utils.cpp
 )
 
 ament_target_dependencies(nav2_util
