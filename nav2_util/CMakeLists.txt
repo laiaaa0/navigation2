@@ -11,6 +11,8 @@ find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(lifecycle_msgs REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 
 nav2_package()
 
@@ -28,6 +30,8 @@ ament_target_dependencies(nav2_util
   tf2_ros
   nav_msgs
   geometry_msgs
+  lifecycle_msgs
+  rclcpp_lifecycle
 )
 
 add_library(map_lib SHARED

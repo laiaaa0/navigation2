@@ -15,6 +15,8 @@
 #include "nav2_util/lifecycle.hpp"
 #include <vector>
 #include <string>
+#include "lifecycle_msgs/srv/change_state.hpp"
+#include "nav2_util/service_client.hpp"
 
 namespace nav2_util
 {
@@ -33,9 +35,22 @@ Tokens Split(const std::string tokenstring, char delimiter)
   return tokens;
 }
 
-void BringupLifecycleNodes(const std::vector<std::string> &)
+void BringupLifecycleNode(const std::string & node_name)
 {
+  ServiceClient<lifecycle_msgs::srv::ChangeState> sc(node_name + "/change_state");
+  sc.waitForService();
+  auto request = std::make_shared<lifecycle_msgs::srv::ChangeState::Request>();
+  request->transition.id = lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE;
+  sc.invoke(request);
+  request->transition.id = lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE;
+  sc.invoke(request);
+}
 
+void BringupLifecycleNodes(const std::vector<std::string> & node_names)
+{
+  for (const auto & node_name : node_names) {
+    BringupLifecycleNode(node_name);
+  }
 }
 
 }  // namespace nav2_util
