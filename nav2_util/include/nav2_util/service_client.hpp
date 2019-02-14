@@ -25,10 +25,16 @@ template<class ServiceT>
 class ServiceClient
 {
 public:
-  explicit ServiceClient(const std::string & name)
+  explicit ServiceClient(
+    const std::string & name,
+    const rclcpp::Node::SharedPtr & provided_node = rclcpp::Node::SharedPtr())
   {
-    auto node_name = removeInvalidNodeNameCharacters(name);
-    node_ = rclcpp::Node::make_shared(node_name + "_Node");
+    if (provided_node) {
+      node_ = provided_node;
+    } else {
+      auto node_name = removeInvalidNodeNameCharacters(name);
+      node_ = rclcpp::Node::make_shared(node_name + "_Node");
+    }
     client_ = node_->create_client<ServiceT>(name);
   }
 

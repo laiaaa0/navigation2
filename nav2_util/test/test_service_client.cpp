@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "nav2_util/service_client.hpp"
+#include "rclcpp/rclcpp.hpp"
 #include "std_srvs/srv/empty.hpp"
 #include "gtest/gtest.h"
 
@@ -29,14 +30,25 @@ RclCppFixture g_rclcppfixture;
 class TestServiceClient : public ServiceClient<std_srvs::srv::Empty>
 {
 public:
-  TestServiceClient(const std::string & name)
-  : ServiceClient(name) {}
+  TestServiceClient(
+    const std::string & name,
+    const rclcpp::Node::SharedPtr & provided_node = rclcpp::Node::SharedPtr())
+  : ServiceClient(name, provided_node) {}
 
   std::string name() {return node_->get_name();}
+  const rclcpp::Node::SharedPtr & getNode() {return node_;}
 };
 
-TEST(ServiceClient, service_name_with_slash)
+TEST(ServiceClient, are_non_alphanumerics_removed)
 {
   TestServiceClient t("/foo/bar");
   ASSERT_EQ(t.name(), "_foo_bar_Node");
+}
+
+TEST(ServiceClient, can_ServiceClient_use_passed_in_node)
+{
+  auto node = rclcpp::Node::make_shared("test_node");
+  TestServiceClient t("bar", node);
+  ASSERT_EQ(t.getNode(), node);
+  ASSERT_EQ(t.name(), "test_node");
 }
