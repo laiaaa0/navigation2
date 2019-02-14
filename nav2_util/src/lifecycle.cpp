@@ -20,6 +20,9 @@
 #include "lifecycle_msgs/srv/change_state.hpp"
 #include "lifecycle_msgs/srv/get_state.hpp"
 #include "nav2_util/service_client.hpp"
+#include "nav2_util/node_utils.hpp"
+
+using nav2_util::GenerateInternalNode;
 
 namespace nav2_util
 {
@@ -40,21 +43,12 @@ Tokens Split(const std::string tokenstring, char delimiter)
 
 void BringupLifecycleNode(const std::string & node_name)
 {
-  ServiceClient<lifecycle_msgs::srv::ChangeState> sc(node_name + "/change_state");
-  sc.waitForService();
-  auto request = std::make_shared<lifecycle_msgs::srv::ChangeState::Request>();
-  request->transition.id = lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE;
-  sc.invoke(request);
-  request->transition.id = lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE;
-  sc.invoke(request);
-  ServiceClient<lifecycle_msgs::srv::GetState> sc2(node_name + "/get_state");
-  sc2.waitForService();
-  ServiceClient<lifecycle_msgs::srv::GetState>::ResponseType::SharedPtr result;
-  auto request2 = std::make_shared<lifecycle_msgs::srv::GetState::Request>();
-  do {
+  LifecycleServiceClient sc(node_name);
+  sc.ChangeState(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
+  sc.ChangeState(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
+  while (sc.GetState() != lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE) {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    result = sc2.invoke(request2);
-  } while (result->current_state.id != lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE);
+  }
 }
 
 void BringupLifecycleNodes(const std::vector<std::string> & node_names)
@@ -62,6 +56,32 @@ void BringupLifecycleNodes(const std::vector<std::string> & node_names)
   for (const auto & node_name : node_names) {
     BringupLifecycleNode(node_name);
   }
+}
+
+LifecycleServiceClient::LifecycleServiceClient(const std::string & node_name)
+: node_(GenerateInternalNode(node_name + "_lifecycle_client")),
+  change_state_(node_name + "/change_state", node_),
+  get_state_(node_name + "/get_state", node_)
+{
+}
+
+void LifecycleServiceClient::ChangeState(
+  const uint8_t newState,
+  const std::chrono::seconds timeout)
+{
+  change_state_.waitForService(timeout);
+  auto request = std::make_shared<lifecycle_msgs::srv::ChangeState::Request>();
+  request->transition.id = newState;
+  change_state_.invoke(request, timeout);
+}
+
+uint8_t LifecycleServiceClient::GetState(
+  const std::chrono::seconds timeout)
+{
+  get_state_.waitForService(timeout);
+  auto request = std::make_shared<lifecycle_msgs::srv::GetState::Request>();
+  auto result = get_state_.invoke(request, timeout);
+  return result->current_state.id;
 }
 
 }  // namespace nav2_util

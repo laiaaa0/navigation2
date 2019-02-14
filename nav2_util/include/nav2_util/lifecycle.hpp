@@ -17,6 +17,10 @@
 
 #include <vector>
 #include <string>
+#include <chrono>
+#include "lifecycle_msgs/srv/change_state.hpp"
+#include "lifecycle_msgs/srv/get_state.hpp"
+#include "nav2_util/service_client.hpp"
 
 namespace nav2_util
 {
@@ -29,6 +33,24 @@ void BringupLifecycleNodes(const std::string & nodes)
 {
   BringupLifecycleNodes(Split(nodes, ':'));
 }
+
+class LifecycleServiceClient
+{
+public:
+  LifecycleServiceClient(const std::string & node_name);
+
+  void ChangeState(
+    const uint8_t newState,  // takes a lifecycle_msgs::msg::Transition id
+    const std::chrono::seconds timeout = std::chrono::seconds::max());
+
+  // returns a lifecycle_msgs::msg::State id
+  uint8_t GetState(const std::chrono::seconds timeout = std::chrono::seconds::max());
+
+protected:
+  rclcpp::Node::SharedPtr node_;
+  ServiceClient<lifecycle_msgs::srv::ChangeState> change_state_;
+  ServiceClient<lifecycle_msgs::srv::GetState> get_state_;
+};
 
 }  // namespace nav2_util
 

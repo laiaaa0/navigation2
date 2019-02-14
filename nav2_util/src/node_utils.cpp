@@ -42,7 +42,7 @@ std::string TimeToString(size_t len)
     output.replace(0, len,
       timestring,
       timestring.length() - len, len);
-  }else {
+  } else {
     output.replace(len - timestring.length(), timestring.length(),
       timestring,
       0, timestring.length());
@@ -52,7 +52,7 @@ std::string TimeToString(size_t len)
 
 std::string GenerateInternalNodeName(const std::string & prefix)
 {
-  return prefix + "_" + TimeToString(8);
+  return SanitizeNodeName(prefix) + "_" + TimeToString(8);
 }
 
 rclcpp::Node::SharedPtr GenerateInternalNode(const std::string & prefix)
