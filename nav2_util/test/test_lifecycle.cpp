@@ -41,21 +41,15 @@ TEST(Split, SplitFunction)
   ASSERT_EQ(Split("foo::bar", ':'), Tokens({"foo", "", "bar"}));
 }
 
-bool AreAllNodesActivated(std::vector<rclcpp_lifecycle::LifecycleNode::SharedPtr> & nodes) {
-  for (const auto & node : nodes) {
-    if (node->get_current_state().id() != lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE) {
-      return false;
-    }
-  }
-  return true;
-}
-void SpinNodesUntilActivated(std::vector<rclcpp_lifecycle::LifecycleNode::SharedPtr> nodes)
+void SpinNodesUntilActivated(
+  std::vector<rclcpp_lifecycle::LifecycleNode::SharedPtr> nodes,
+  std::atomic<bool> * test_done)
 {
   rclcpp::executors::SingleThreadedExecutor exec;
   for (const auto & node : nodes) {
     exec.add_node(node->get_node_base_interface());
   }
-  while(rclcpp::ok() && !AreAllNodesActivated(nodes)) {
+  while (rclcpp::ok() && !(*test_done)) {
     exec.spin_some();
   }
 }
@@ -66,8 +60,10 @@ TEST(Lifecycle, interface)
   nodes.push_back(rclcpp_lifecycle::LifecycleNode::make_shared("foo"));
   nodes.push_back(rclcpp_lifecycle::LifecycleNode::make_shared("bar"));
 
-  std::thread node_thread(SpinNodesUntilActivated, nodes);
+  std::atomic<bool> done(false);
+  std::thread node_thread(SpinNodesUntilActivated, nodes, &done);
   BringupLifecycleNodes("/foo:/bar");
+  done = true;
   node_thread.join();
   SUCCEED();
 }
