@@ -2,3 +2,9 @@ ament_add_gtest(test_execution_timer test_execution_timer.cpp)
 
 ament_add_gtest(test_lifecycle test_lifecycle.cpp)
 target_link_libraries(test_lifecycle nav2_util)
+
+find_package(std_srvs)
+
+ament_add_gtest(test_service_client test_service_client.cpp)
+ament_target_dependencies(test_service_client std_srvs)
+target_link_libraries(test_service_client nav2_util)

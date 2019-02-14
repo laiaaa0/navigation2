@@ -27,7 +27,8 @@ class ServiceClient
 public:
   explicit ServiceClient(const std::string & name)
   {
-    node_ = rclcpp::Node::make_shared(name + "_Node");
+    auto node_name = removeInvalidNodeNameCharacters(name);
+    node_ = rclcpp::Node::make_shared(node_name + "_Node");
     client_ = node_->create_client<ServiceT>(name);
   }
 
@@ -61,6 +62,17 @@ public:
 protected:
   rclcpp::Node::SharedPtr node_;
   typename rclcpp::Client<ServiceT>::SharedPtr client_;
+  std::string removeInvalidNodeNameCharacters(const std::string & service_name)
+  {
+    // We're re-using the service name as the node name for this ServiceClient
+    // object. Node names can only contain alphanumeric or _. The service names
+    // frequently have / characters in them.
+    std::string node_name(service_name);
+    std::replace_if(begin(node_name), end(node_name),
+      [](auto c) {return !isalnum(c);},
+      '_');  // we replace a non alphanumeric with _
+    return node_name;
+  }
 };
 
 }  // namespace nav2_tasks
