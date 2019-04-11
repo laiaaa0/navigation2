@@ -23,23 +23,29 @@ DwbController:
     decel_lim_x: -2.5
     decel_lim_y: 0.0
     decel_lim_theta: -3.2
-    vx_samples: 20
+    vx_samples: 5
     vy_samples: 5
-    vtheta_samples: 20
+    vtheta_samples: 5
     sim_time: 1.7
+    linear_granularity: 0.025
     xy_goal_tolerance: 0.25
     ObstacleFootprint.scale: 0.1
     ObstacleFootprint.max_scaling_factor: 0.2
     ObstacleFootprint.scaling_speed: 0.25
-    PathAlign.scale: 32.0
-    GoalAlign.scale: 24.0
-    PathDist.scale: 32.0
+    PathAlign.scale: 40.0
+    PathAlign.aggregation_type: last
+    GoalAlign.scale: 20.0
+    GoalAlign.aggregation_type: last
+    PathDist.scale: 50.0
+    PathDist.aggregation_type: last
     GoalDist.scale: 24.0
+    GoalDist.aggregation_type: last
     RotateToGoal.scale: 32.0
+    Oscillation.scale: 0.0
 local_costmap:
   local_costmap:
     ros__parameters:
-      robot_radius: 0.092
+      robot_radius: 0.13
       obstacle_layer:
         enabled: True
       always_send_full_costmap: True
@@ -52,6 +58,7 @@ local_costmap:
 global_costmap:
   global_costmap:
     ros__parameters:
+      robot_radius: 0.17
       obstacle_layer:
         enabled: True
       always_send_full_costmap: True
