@@ -38,7 +38,7 @@ DwbController:
     GoalAlign.aggregation_type: last
     PathDist.scale: 50.0
     PathDist.aggregation_type: last
-    GoalDist.scale: 24.0
+    GoalDist.scale: 30.0
     GoalDist.aggregation_type: last
     RotateToGoal.scale: 32.0
     Oscillation.scale: 0.0
@@ -46,6 +46,7 @@ local_costmap:
   local_costmap:
     ros__parameters:
       robot_radius: 0.13
+      inflation_layer.cost_scaling_factor: 2.0
       obstacle_layer:
         enabled: True
       always_send_full_costmap: True
