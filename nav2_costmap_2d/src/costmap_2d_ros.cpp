@@ -434,6 +434,13 @@ void Costmap2DROS::resetLayers()
 bool Costmap2DROS::getRobotPose(geometry_msgs::msg::PoseStamped & global_pose) const
 {
   tf2::toMsg(tf2::Transform::getIdentity(), global_pose.pose);
+
+  if (robot_base_frame_ == global_frame_) {
+    global_pose.header.frame_id = global_frame_;
+    global_pose.header.stamp = node_->now();
+    return true;
+  }
+
   geometry_msgs::msg::PoseStamped robot_pose;
   tf2::toMsg(tf2::Transform::getIdentity(), robot_pose.pose);
 

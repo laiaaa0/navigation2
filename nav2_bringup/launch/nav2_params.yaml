@@ -47,6 +47,7 @@ local_costmap:
     ros__parameters:
       robot_radius: 0.13
       inflation_layer.cost_scaling_factor: 2.0
+      global_frame: base_link
       obstacle_layer:
         enabled: True
       always_send_full_costmap: True
