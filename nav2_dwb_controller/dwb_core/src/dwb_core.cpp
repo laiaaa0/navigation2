@@ -466,10 +466,10 @@ nav_2d_msgs::msg::Path2D DWBLocalPlanner::transformGlobalPlan(
 
   // Remove the portion of the global plan that we've already passed so we don't
   // process it on the next iteration.
-  if (prune_plan_) {
-    global_plan_.poses.erase(begin(global_plan_.poses), transformation_begin);
-    pub_.publishGlobalPlan(global_plan_);
-  }
+  //if (prune_plan_) {
+  //  global_plan_.poses.erase(begin(global_plan_.poses), transformation_begin);
+  //  pub_.publishGlobalPlan(global_plan_);
+  //}
 
   if (transformed_plan.poses.size() == 0) {
     throw nav_core2::PlannerException("Resulting plan has 0 poses in it.");

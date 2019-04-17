@@ -32,7 +32,7 @@ DwbController:
     ObstacleFootprint.scale: 0.1
     ObstacleFootprint.max_scaling_factor: 0.2
     ObstacleFootprint.scaling_speed: 0.25
-    PathAlign.scale: 40.0
+    PathAlign.scale: 0.0
     PathAlign.aggregation_type: last
     GoalAlign.scale: 20.0
     GoalAlign.aggregation_type: last
@@ -41,12 +41,19 @@ DwbController:
     GoalDist.scale: 30.0
     GoalDist.aggregation_type: last
     RotateToGoal.scale: 32.0
-    Oscillation.scale: 0.0
+    Oscillation.scale: 32.0
 local_costmap:
   local_costmap:
     ros__parameters:
-      robot_radius: 0.13
-      inflation_layer.cost_scaling_factor: 2.0
+      plugin_names:
+        - obstacle_layer
+        - inflation_layer
+      plugin_types:
+        - nav2_costmap_2d::ObstacleLayer
+        - nav2_costmap_2d::InflationLayer
+      rolling_window: true
+      footprint: "[[-0.205, -0.155], [-0.205, 0.155], [0.077, 0.155], [0.077, -0.155]]"
+      inflation_layer.cost_scaling_factor: 3.0
       global_frame: base_link
       obstacle_layer:
         enabled: True

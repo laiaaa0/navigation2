@@ -172,8 +172,8 @@ Costmap2DROS::Costmap2DROS(const std::string & name, tf2_ros::Buffer & tf)
     "update_frequency", rclcpp::ParameterType::PARAMETER_DOUBLE, {0, 100});
   param_validator_->add_param(
     "publish_frequency", rclcpp::ParameterType::PARAMETER_DOUBLE, {0, 100});
-  param_validator_->add_param("width", rclcpp::ParameterType::PARAMETER_INTEGER, {0, 0}, 1);
-  param_validator_->add_param("height", rclcpp::ParameterType::PARAMETER_INTEGER, {0, 0}, 1);
+  param_validator_->add_param("width", rclcpp::ParameterType::PARAMETER_INTEGER, {0, 0}, 10);
+  param_validator_->add_param("height", rclcpp::ParameterType::PARAMETER_INTEGER, {0, 0}, 10);
   param_validator_->add_param("resolution", rclcpp::ParameterType::PARAMETER_DOUBLE, {0, 50});
   param_validator_->add_param("origin_x", rclcpp::ParameterType::PARAMETER_DOUBLE);
   param_validator_->add_param("origin_y", rclcpp::ParameterType::PARAMETER_DOUBLE);
