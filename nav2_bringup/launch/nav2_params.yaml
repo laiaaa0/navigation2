@@ -28,14 +28,15 @@ DwbController:
     vtheta_samples: 20
     sim_time: 1.7
     xy_goal_tolerance: 0.25
-    ObstacleFootprint.scale: 0.1
-    ObstacleFootprint.max_scaling_factor: 0.2
-    ObstacleFootprint.scaling_speed: 0.25
+    critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist", "Stationary"]
+    BaseObstacle.scale: 0.1
     PathAlign.scale: 32.0
     GoalAlign.scale: 24.0
     PathDist.scale: 32.0
     GoalDist.scale: 24.0
     RotateToGoal.scale: 32.0
+    Stationary.scale: 5.0
+    Stationary.zero_velocity_tolerance: 0.01
 local_costmap:
   local_costmap:
     ros__parameters:

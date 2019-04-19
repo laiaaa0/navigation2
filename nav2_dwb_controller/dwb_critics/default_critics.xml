@@ -38,5 +38,9 @@
       <description>Penalize trajectories with rotational velocities
       </description>
     </class>
+    <class type="dwb_critics::StationaryCritic" base_class_type="dwb_core::TrajectoryCritic">
+      <description>Penalize standing still for too long
+      </description>
+    </class>
   </library>
 </class_libraries>
