@@ -65,10 +65,6 @@ std::string generate_internal_node_name(const std::string & prefix)
 
 rclcpp::Node::SharedPtr generate_internal_node(const std::string & prefix)
 {
-  rclcpp::NodeOptions options;
-  options.use_global_arguments(false);
-  options.start_parameter_services(false);
-  options.start_parameter_event_publisher(false);
   return rclcpp::Node::make_shared(generate_internal_node_name(prefix));
 }
 

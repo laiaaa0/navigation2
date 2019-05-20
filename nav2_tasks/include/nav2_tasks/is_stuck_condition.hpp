@@ -50,7 +50,7 @@ public:
     RCLCPP_DEBUG(node_->get_logger(), "Shutting down IsStuckCondition BT node");
   }
 
-  void onInit() override
+  void onInit() 
   {
     node_ = blackboard()->template get<rclcpp::Node::SharedPtr>("node");
 

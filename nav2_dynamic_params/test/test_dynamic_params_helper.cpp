@@ -27,7 +27,7 @@ int main(int argc, char ** argv)
 
   auto node_A = rclcpp_lifecycle::LifecycleNode::make_shared("test_node");
   auto node_B = rclcpp_lifecycle::LifecycleNode::make_shared(
-    "test_node", "test_namespace", rclcpp::NodeOptions());
+    "test_node", "test_namespace");
 
   node_A->set_parameters({rclcpp::Parameter("foo", 1.0)});
   node_B->set_parameters({rclcpp::Parameter("bar", 1)});
