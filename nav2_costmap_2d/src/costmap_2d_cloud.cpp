@@ -31,7 +31,7 @@
 #include <utility>
 
 #include "rclcpp/rclcpp.hpp"
-#include "sensor_msgs/msg/point_cloud.hpp"
+#include "sensor_msgs/msg/point_cloud2.hpp"
 #include "sensor_msgs/msg/channel_float32.hpp"
 #include "nav2_voxel_grid/voxel_grid.hpp"
 #include "nav2_msgs/msg/voxel_grid.hpp"
@@ -70,8 +70,8 @@ V_Cell g_unknown;
 
 rclcpp::Node::SharedPtr g_node;
 
-rclcpp::Publisher<sensor_msgs::msg::PointCloud>::SharedPtr pub_marked;
-rclcpp::Publisher<sensor_msgs::msg::PointCloud>::SharedPtr pub_unknown;
+rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pub_marked;
+rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pub_unknown;
 
 void voxelCallback(const nav2_msgs::msg::VoxelGrid::ConstSharedPtr grid)
 {
@@ -134,7 +134,7 @@ void voxelCallback(const nav2_msgs::msg::VoxelGrid::ConstSharedPtr grid)
   }
 
   {
-    auto cloud = std::make_unique<sensor_msgs::msg::PointCloud>();
+    auto cloud = std::make_unique<sensor_msgs::msg::PointCloud2>();
     cloud->points.resize(num_marked);
     cloud->channels.resize(1);
     cloud->channels[0].values.resize(num_marked);
@@ -165,7 +165,7 @@ void voxelCallback(const nav2_msgs::msg::VoxelGrid::ConstSharedPtr grid)
   }
 
   {
-    auto cloud = std::make_unique<sensor_msgs::msg::PointCloud>();
+    auto cloud = std::make_unique<sensor_msgs::msg::PointCloud2>();
     cloud->points.resize(num_unknown);
     cloud->channels.resize(1);
     cloud->channels[0].values.resize(num_unknown);
@@ -208,9 +208,9 @@ int main(int argc, char ** argv)
 
   RCLCPP_DEBUG(g_node->get_logger(), "Starting up costmap_2d_cloud");
 
-  pub_marked = g_node->create_publisher<sensor_msgs::msg::PointCloud>(
+  pub_marked = g_node->create_publisher<sensor_msgs::msg::PointCloud2>(
     "voxel_marked_cloud", 1);
-  pub_unknown = g_node->create_publisher<sensor_msgs::msg::PointCloud>(
+  pub_unknown = g_node->create_publisher<sensor_msgs::msg::PointCloud2>(
     "voxel_unknown_cloud", 1);
   auto sub = g_node->create_subscription<nav2_msgs::msg::VoxelGrid>(
     "voxel_grid", rclcpp::SystemDefaultsQoS(), voxelCallback);

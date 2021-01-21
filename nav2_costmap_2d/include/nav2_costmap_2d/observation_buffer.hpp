@@ -97,7 +97,7 @@ public:
   bool setGlobalFrame(const std::string new_global_frame);
 
   /**
-   * @brief  Transforms a PointCloud to the global frame and buffers it
+   * @brief  Transforms a PointCloud2 to the global frame and buffers it
    * <b>Note: The burden is on the user to make sure the transform is available... ie they should use a MessageNotifier</b>
    * @param  cloud The cloud to be buffered
    */

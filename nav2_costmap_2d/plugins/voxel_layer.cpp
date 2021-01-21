@@ -92,7 +92,7 @@ void VoxelLayer::onInitialize()
 
   voxel_pub_->on_activate();
 
-  clearing_endpoints_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud>(
+  clearing_endpoints_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>(
     "clearing_endpoints", custom_qos);
 
   unknown_threshold_ += (VOXEL_BITS - size_z_);
@@ -292,7 +292,7 @@ void VoxelLayer::raytraceFreespace(
   double * max_x,
   double * max_y)
 {
-  auto clearing_endpoints_ = std::make_unique<sensor_msgs::msg::PointCloud>();
+  auto clearing_endpoints_ = std::make_unique<sensor_msgs::msg::PointCloud2>();
 
   size_t clearing_observation_cloud_size = clearing_observation.cloud_->height *
     clearing_observation.cloud_->width;
