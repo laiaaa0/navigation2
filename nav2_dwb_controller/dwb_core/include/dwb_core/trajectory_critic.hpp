@@ -45,7 +45,7 @@
 #include "nav_2d_msgs/msg/twist2_d.hpp"
 #include "nav_2d_msgs/msg/path2_d.hpp"
 #include "dwb_msgs/msg/trajectory2_d.hpp"
-#include "sensor_msgs/msg/point_cloud.hpp"
+#include "sensor_msgs/msg/point_cloud2.hpp"
 #include "nav2_util/lifecycle_node.hpp"
 
 namespace dwb_core
@@ -159,14 +159,14 @@ public:
    * straightforward as the cost in the costmap, or it could be the number of cells away
    * from the goal pose.
    *
-   * Prior to calling this, dwb_core will load the PointCloud's header and the points
+   * Prior to calling this, dwb_core will load the PointCloud2's header and the points
    * in row-major order. The critic may then add a ChannelFloat to the channels member of the PC
    * with the same number of values as the points array. This information may then be converted
    * and published as a PointCloud2.
    *
-   * @param pc PointCloud to add channels to
+   * @param pc PointCloud2 to add channels to
    */
-  virtual void addCriticVisualization(sensor_msgs::msg::PointCloud &) {}
+  virtual void addCriticVisualization(sensor_msgs::msg::PointCloud2 &) {}
 
   std::string getName()
   {

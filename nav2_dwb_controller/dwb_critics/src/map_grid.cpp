@@ -159,7 +159,7 @@ double MapGridCritic::scorePose(const geometry_msgs::msg::Pose2D & pose)
   return getScore(cell_x, cell_y);
 }
 
-void MapGridCritic::addCriticVisualization(sensor_msgs::msg::PointCloud & pc)
+void MapGridCritic::addCriticVisualization(sensor_msgs::msg::PointCloud2 & pc)
 {
   sensor_msgs::msg::ChannelFloat32 grid_scores;
   grid_scores.name = name_;
