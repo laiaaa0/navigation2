@@ -33,6 +33,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/point_cloud2.hpp"
 #include "sensor_msgs/msg/channel_float32.hpp"
+#include "sensor_msgs/point_cloud2_iterator.hpp"
 #include "nav2_voxel_grid/voxel_grid.hpp"
 #include "nav2_msgs/msg/voxel_grid.hpp"
 #include "nav2_util/execution_timer.hpp"
@@ -134,62 +135,84 @@ void voxelCallback(const nav2_msgs::msg::VoxelGrid::ConstSharedPtr grid)
   }
 
   {
+    // Create an unordered pointcloud2
     auto cloud = std::make_unique<sensor_msgs::msg::PointCloud2>();
-    cloud->points.resize(num_marked);
-    cloud->channels.resize(1);
-    cloud->channels[0].values.resize(num_marked);
-    cloud->channels[0].name = "rgb";
+    // TODO @laiaaa0 PointCloud2 doesn't have points / channels
     cloud->header.frame_id = frame_id;
     cloud->header.stamp = stamp;
+    cloud->width=num_marked;
+    cloud->height=1;
+    sensor_msgs::PointCloud2Modifier modifier(*cloud.get());
+    modifier.setPointCloud2FieldsByString(2,"xyz", "rgb");
+    //TODO @Laiaaa0 make sure these fields are set
+    cloud->is_bigendian;
+    cloud->is_dense;
 
-    sensor_msgs::msg::ChannelFloat32 & chan = cloud->channels[0];
-    for (uint32_t i = 0; i < num_marked; ++i) {
-      geometry_msgs::msg::Point32 & p = cloud->points[i];
-      float & cval = chan.values[i];
+    sensor_msgs::PointCloud2Iterator<float> it_x(*cloud.get(),"x");
+    sensor_msgs::PointCloud2Iterator<float> it_y(*cloud.get(),"y");
+    sensor_msgs::PointCloud2Iterator<float> it_z(*cloud.get(),"z");
+    sensor_msgs::PointCloud2Iterator<uint32_t> it_r(*cloud.get(),"r");
+    sensor_msgs::PointCloud2Iterator<uint32_t> it_g(*cloud.get(),"g");
+    sensor_msgs::PointCloud2Iterator<uint32_t> it_b(*cloud.get(),"b");
+    
+    for (size_t i=0; i<num_marked; ++i){
       Cell & c = g_marked[i];
+      *it_x = c.x;
+      *it_y = c.y;
+      *it_z  = c.z;
+      
+      *it_r = g_colors_r[c.status] * 255.0;
+      *it_g = g_colors_g[c.status] * 255.0;
+      *it_b = g_colors_b[c.status] * 255.0;
+      //*it_a = g_colors_a[c.status] * 255.0;
 
-      p.x = c.x;
-      p.y = c.y;
-      p.z = c.z;
-
-      uint32_t r = g_colors_r[c.status] * 255.0;
-      uint32_t g = g_colors_g[c.status] * 255.0;
-      uint32_t b = g_colors_b[c.status] * 255.0;
-      // uint32_t a = g_colors_a[c.status] * 255.0;
-
-      uint32_t col = (r << 16) | (g << 8) | b;
-      memcpy(&cval, &col, sizeof col);
+      ++it_x;
+      ++it_y;
+      ++it_z;
+      ++it_r;
+      ++it_g;
+      ++it_b;
     }
-
     pub_marked->publish(std::move(cloud));
   }
 
   {
     auto cloud = std::make_unique<sensor_msgs::msg::PointCloud2>();
-    cloud->points.resize(num_unknown);
-    cloud->channels.resize(1);
-    cloud->channels[0].values.resize(num_unknown);
-    cloud->channels[0].name = "rgb";
     cloud->header.frame_id = frame_id;
     cloud->header.stamp = stamp;
+    cloud->width=num_unknown;
+    cloud->height=1;
+    sensor_msgs::PointCloud2Modifier modifier(*cloud.get());
+    modifier.setPointCloud2FieldsByString(2,"xyz", "rgb");
+    //TODO @Laiaaa0 make sure these fields are set
+    cloud->is_bigendian;
+    cloud->is_dense;
 
-    sensor_msgs::msg::ChannelFloat32 & chan = cloud->channels[0];
+    sensor_msgs::PointCloud2Iterator<float> it_x(*cloud.get(),"x");
+    sensor_msgs::PointCloud2Iterator<float> it_y(*cloud.get(),"y");
+    sensor_msgs::PointCloud2Iterator<float> it_z(*cloud.get(),"z");
+    sensor_msgs::PointCloud2Iterator<uint32_t> it_r(*cloud.get(),"r");
+    sensor_msgs::PointCloud2Iterator<uint32_t> it_g(*cloud.get(),"g");
+    sensor_msgs::PointCloud2Iterator<uint32_t> it_b(*cloud.get(),"b");
+
     for (uint32_t i = 0; i < num_unknown; ++i) {
-      geometry_msgs::msg::Point32 & p = cloud->points[i];
-      float & cval = chan.values[i];
-      Cell & c = g_unknown[i];
+       Cell & c = g_unknown[i];
 
-      p.x = c.x;
-      p.y = c.y;
-      p.z = c.z;
+      *it_x = c.x;
+      *it_y = c.y;
+      *it_z  = c.z;
+      
+      *it_r = g_colors_r[c.status] * 255.0;
+      *it_g = g_colors_g[c.status] * 255.0;
+      *it_b = g_colors_b[c.status] * 255.0;
+      //*it_a = g_colors_a[c.status] * 255.0;
 
-      uint32_t r = g_colors_r[c.status] * 255.0;
-      uint32_t g = g_colors_g[c.status] * 255.0;
-      uint32_t b = g_colors_b[c.status] * 255.0;
-      // uint32_t a = g_colors_a[c.status] * 255.0;
-
-      uint32_t col = (r << 16) | (g << 8) | b;
-      memcpy(&cval, &col, sizeof col);
+      ++it_x;
+      ++it_y;
+      ++it_z;
+      ++it_r;
+      ++it_g;
+      ++it_b;
     }
 
     pub_unknown->publish(std::move(cloud));
