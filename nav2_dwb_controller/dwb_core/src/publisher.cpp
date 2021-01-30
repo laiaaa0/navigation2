@@ -252,12 +252,14 @@ DWBPublisher::publishCostGrid(
   auto cost_grid_pc = std::make_unique<sensor_msgs::msg::PointCloud2>();
   cost_grid_pc->header.frame_id = costmap_ros->getGlobalFrameID();
   cost_grid_pc->header.stamp = node_->now();
+  sensor_msgs::PointCloud2Modifier cost_grid_pc_modifier(*cost_grid_pc.get());
+
 
   nav2_costmap_2d::Costmap2D * costmap = costmap_ros->getCostmap();
   double x_coord, y_coord;
   unsigned int size_x = costmap->getSizeInCellsX();
   unsigned int size_y = costmap->getSizeInCellsY();
-  cost_grid_pc->points.resize(size_x * size_y);
+  cost_grid_pc_modifier.resize(size_x * size_y);
   unsigned int i = 0;
   for (unsigned int cy = 0; cy < size_y; cy++) {
     for (unsigned int cx = 0; cx < size_x; cx++) {
